@@ -1,4 +1,4 @@
-package com.example.imd4008_tutorial6;
+package com.example.imd4008_A4;
 
 import android.content.Context;
 

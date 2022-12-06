@@ -1,4 +1,4 @@
-package com.example.imd4008_tutorial6;
+package com.example.imd4008_A4;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -8,7 +8,6 @@ import android.graphics.Path;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Toast;
 
 import java.util.LinkedList;
 
@@ -65,8 +64,6 @@ public class DrawingCanvas extends View {
                     break;
 
                 case MotionEvent.ACTION_UP:
-                    if (pathColour == Color.BLUE) pathColour = Color.RED;
-                    else pathColour = Color.BLUE;
                     mPaint = new Paint();
                     mPath = new Path();
                     //mPaint.setColor(Color.BLUE);

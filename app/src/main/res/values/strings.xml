@@ -1,3 +1,8 @@
 <resources>
-    <string name="app_name">Tutorial 6</string>
+    <string name="app_name">Drawing App - A4</string>
+    <string name="ok">Ok</string>
+    <string name="cancel">Cancel</string>
+    <string name="saturation">Saturation</string>
+    <string name="brightness">Lightness</string>
+    <string name="color_picker">Pick a colour</string>
 </resources>
