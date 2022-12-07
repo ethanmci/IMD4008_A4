@@ -44,8 +44,17 @@ public class MainActivity extends AppCompatActivity {
         changeFragment(ColorPicker.class);
     }
 
-    void ChangeColor() {
+    public void changeColor(int color) {
+        setColor = color;
+        colorDisplay.setCardBackgroundColor(setColor);
+    }
 
+    public int getColor() {
+        return setColor;
+    }
+
+    public void hideOverlay() {
+        fcv.removeAllViewsInLayout();
     }
 
     public void changeFragment(Class fragmentClass) {

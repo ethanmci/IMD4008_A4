@@ -4,6 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:clickable="true"
+    android:longClickable="true"
     tools:context=".fragments.ColorPicker">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -18,16 +20,17 @@
             android:layout_height="match_parent"
             android:background="@android:color/system_neutral1_900"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent"
+            tools:targetApi="s">
 
             <ImageView
-                android:id="@+id/imageView"
-                android:layout_width="266dp"
+                android:id="@+id/colorPickerImage"
+                android:layout_width="295dp"
                 android:layout_height="295dp"
                 android:layout_marginTop="8dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/colorPicker"
+                app:layout_constraintTop_toBottomOf="@+id/colorPickerText"
                 tools:src="@tools:sample/avatars" />
 
             <TextView
@@ -37,12 +40,12 @@
                 android:layout_marginBottom="8dp"
                 android:text="@string/saturation"
                 android:textColor="@android:color/secondary_text_dark"
-                app:layout_constraintBottom_toTopOf="@+id/seekBar2"
+                app:layout_constraintBottom_toTopOf="@+id/satSlider"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
 
             <SeekBar
-                android:id="@+id/seekBar2"
+                android:id="@+id/satSlider"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
@@ -56,23 +59,24 @@
                 android:layout_marginBottom="8dp"
                 android:text="@string/brightness"
                 android:textColor="@android:color/secondary_text_dark"
-                app:layout_constraintBottom_toTopOf="@+id/seekBar"
+                app:layout_constraintBottom_toTopOf="@+id/lightSlider"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
 
             <SeekBar
-                android:id="@+id/seekBar"
+                android:id="@+id/lightSlider"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layout_constraintBottom_toTopOf="@+id/linearLayout"
                 app:layout_constraintStart_toStartOf="parent" />
 
             <TextView
-                android:id="@+id/colorPicker"
+                android:id="@+id/colorPickerText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="32dp"
                 android:text="@string/color_picker"
+                android:textColor="@android:color/primary_text_dark"
                 android:textSize="20sp"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -93,7 +97,9 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="20dp"
                     android:layout_weight="1"
-                    android:text="Button" />
+                    android:backgroundTint="@android:color/holo_green_dark"
+                    android:text="@string/ok"
+                    android:textColor="#212121" />
 
                 <Button
                     android:id="@+id/cancelColorBtn"
@@ -101,10 +107,12 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="20dp"
                     android:layout_weight="1"
-                    android:text="Button" />
+                    android:backgroundTint="@android:color/system_neutral2_700"
+                    android:text="@string/cancel" />
             </LinearLayout>
 
             <androidx.cardview.widget.CardView
+                android:id="@+id/colorPreviewDisplay"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_margin="10dp"
@@ -114,7 +122,7 @@
                 app:layout_constraintBottom_toTopOf="@+id/saturationText"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/imageView" />
+                app:layout_constraintTop_toBottomOf="@+id/colorPickerImage" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
