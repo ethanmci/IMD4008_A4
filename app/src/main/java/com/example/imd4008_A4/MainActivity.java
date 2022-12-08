@@ -1,5 +1,6 @@
 package com.example.imd4008_A4;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
@@ -10,6 +11,7 @@ import androidx.fragment.app.FragmentTransaction;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 
 import com.example.imd4008_A4.fragments.ColorPicker;
 
@@ -17,9 +19,10 @@ public class MainActivity extends AppCompatActivity {
 
     DrawingCanvas dc;
     CardView colorDisplay;
-    int setColor = Color.YELLOW;
+    int setColor = Color.BLUE;
     FragmentContainerView fcv;
     FragmentManager fm;
+    Button editBtn, eraseBtn, undoBtn, deleteBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,11 +37,19 @@ public class MainActivity extends AppCompatActivity {
         colorDisplay = findViewById(R.id.colorDisplay);
         colorDisplay.setCardBackgroundColor(setColor);
 
+        editBtn = findViewById(R.id.editBtn);
+        undoBtn = findViewById(R.id.undoBtn);
+        eraseBtn = findViewById(R.id.eraseBtn);
+        deleteBtn = findViewById(R.id.delBtn);
+
         colorDisplay.setOnClickListener(view -> openColorChanger());
+
+        undoBtn.setOnClickListener(view -> undo());
+        deleteBtn.setOnClickListener(view -> erase());
+        hideOverlay();
     }
 
     void openColorChanger() {
-        setColor = Color.MAGENTA;
         dc.setPathColour(setColor);
         colorDisplay.setCardBackgroundColor(setColor);
         changeFragment(ColorPicker.class);
@@ -46,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void changeColor(int color) {
         setColor = color;
+        dc.setPathColour(setColor);
         colorDisplay.setCardBackgroundColor(setColor);
     }
 
@@ -57,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
         fcv.removeAllViewsInLayout();
     }
 
-    public void changeFragment(Class fragmentClass) {
+    public void changeFragment(@NonNull Class fragmentClass) {
         Fragment fragment = null;
         try {
             fragment = (Fragment) fragmentClass.newInstance();
@@ -69,5 +81,13 @@ public class MainActivity extends AppCompatActivity {
         FragmentTransaction ft = fm.beginTransaction();
         ft.replace(R.id.fragmentContainerView, fragment, null);
         ft.commit();
+    }
+
+    void erase() {
+        dc.clearCanvas();
+    }
+
+    void undo() {
+        dc.undo();
     }
 }

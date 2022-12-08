@@ -5,18 +5,32 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.os.Debug;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 
 public class DrawingCanvas extends View {
     private Paint mPaint;
     private Path mPath;
+
+    private Paint[] mPaintArray;
+    private Path[] mPathArray;
+
     public LinkedList<Paint> paintContainer;
     public LinkedList<Path> pathsContainer;
     public int pathColour = Color.BLUE;
+
+    public final int DRAWING = 0;
+    public final int ERASING = 1;
+    public final int LINE = 2;
+
+    public int CURRENT_MODE = DRAWING;
 
     public DrawingCanvas(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -26,14 +40,24 @@ public class DrawingCanvas extends View {
 
         mPaint = new Paint();
         mPath = new Path();
+
+        mPaintArray = new Paint[10];
+        mPathArray = new Path[10];
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
-        canvas.drawPath(mPath, mPaint);
+        //canvas.drawPath(mPath, mPaint);
         if(!paintContainer.isEmpty()) {
             for(int i = 0; i < paintContainer.size(); i++) {
                 canvas.drawPath(pathsContainer.get(i), paintContainer.get(i));
+            }
+        }
+
+        for(int i = 0; i < mPathArray.length; i++) {
+            if (mPathArray[i] != new Path() && mPathArray[i] != null
+                    && mPaintArray[i] != new Paint() && mPaintArray[i] != null) {
+                canvas.drawPath(mPathArray[i], mPaintArray[i]);
             }
         }
         super.onDraw(canvas);
@@ -42,7 +66,39 @@ public class DrawingCanvas extends View {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         int touchCount = event.getPointerCount();
+        int index = event.getPointerId(event.getActionIndex());
+        if(CURRENT_MODE == DRAWING) {
+            if(event.getActionMasked() == MotionEvent.ACTION_DOWN
+                    || event.getActionMasked() == MotionEvent.ACTION_POINTER_DOWN) {
+                Log.d("TOUCH", Arrays.toString(mPaintArray));
+                mPathArray[index] = new Path();
+                mPaintArray[index] = new Paint();
+                mPaintArray[index].setColor(pathColour);
+                mPaintArray[index].setStyle(Paint.Style.STROKE);
+                mPaintArray[index].setStrokeJoin(Paint.Join.ROUND);
+                mPaintArray[index].setStrokeCap(Paint.Cap.ROUND);
+                mPaintArray[index].setStrokeWidth(10);
 
+                mPathArray[index].moveTo(event.getX(), event.getY());
+            } else if (event.getActionMasked() == MotionEvent.ACTION_MOVE) {
+                mPathArray[index].lineTo(event.getX(), event.getY());
+                invalidate();
+            } else if (event.getActionMasked() == MotionEvent.ACTION_UP
+                    || event.getActionMasked() == MotionEvent.ACTION_POINTER_UP) {
+                //Log.d("TOUCH", "FINGER UP");
+                pathsContainer.add(mPathArray[index]);
+                paintContainer.add(mPaintArray[index]);
+                mPathArray[index] = new Path();
+                mPaintArray[index] = new Paint();
+                Log.d("LENGTH", String.valueOf(pathsContainer.size()));
+            }
+        }
+        //TODO: other modes
+
+
+
+        // TODO: Reimplement?
+        /*
         if(touchCount == 1) {
             switch(event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
@@ -70,7 +126,9 @@ public class DrawingCanvas extends View {
                     resetPaint();
                     break;
             }
-        } else if (touchCount == 2) {
+        }
+
+        else if (touchCount == 2) {
             switch (event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
                     mPaint.setColor(pathColour);
@@ -98,6 +156,7 @@ public class DrawingCanvas extends View {
                     break;
             }
         }
+         */
         return true;
     }
 
@@ -107,5 +166,17 @@ public class DrawingCanvas extends View {
 
     public void setPathColour(int newColour) {
         pathColour = newColour;
+    }
+
+    public void undo() {
+        paintContainer.removeLast();
+        pathsContainer.removeLast();
+        invalidate();
+    }
+
+    public void clearCanvas() {
+        paintContainer = new LinkedList<Paint>();
+        pathsContainer = new LinkedList<Path>();
+        invalidate();
     }
 }

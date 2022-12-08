@@ -5,4 +5,16 @@
     <string name="saturation">Saturation</string>
     <string name="brightness">Lightness</string>
     <string name="color_picker">Pick a colour</string>
+    <string name="edit">Edit</string>
+    <string name="undo">Undo</string>
+    <string name="erase">Erase</string>
+    <string name="clear">Clear</string>
+    <string name="delete">Delete</string>
+    <string name="drawing_mode">Drawing Mode</string>
+    <string-array name="modes">
+        <item>Lines</item>
+        <item>Polyline</item>
+        <item>Rectangle</item>
+        <item>Circle</item>
+    </string-array>
 </resources>
