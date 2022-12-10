@@ -27,8 +27,11 @@ public class DrawingCanvas extends View {
     public int pathColour = Color.BLUE;
 
     public final int DRAWING = 0;
-    public final int ERASING = 1;
-    public final int LINE = 2;
+    public final int POLYLINE = 1;
+    public final int RECT = 2;
+    public final int CIRCLE = 3;
+
+    public boolean isErasing;
 
     public int CURRENT_MODE = DRAWING;
 
@@ -67,18 +70,18 @@ public class DrawingCanvas extends View {
     public boolean onTouchEvent(MotionEvent event) {
         int touchCount = event.getPointerCount();
         int index = event.getPointerId(event.getActionIndex());
-        if(CURRENT_MODE == DRAWING) {
+
+        if (isErasing && index == 0) {
             if(event.getActionMasked() == MotionEvent.ACTION_DOWN
                     || event.getActionMasked() == MotionEvent.ACTION_POINTER_DOWN) {
                 Log.d("TOUCH", Arrays.toString(mPaintArray));
                 mPathArray[index] = new Path();
                 mPaintArray[index] = new Paint();
-                mPaintArray[index].setColor(pathColour);
+                mPaintArray[index].setColor(Color.WHITE);
                 mPaintArray[index].setStyle(Paint.Style.STROKE);
                 mPaintArray[index].setStrokeJoin(Paint.Join.ROUND);
                 mPaintArray[index].setStrokeCap(Paint.Cap.ROUND);
-                mPaintArray[index].setStrokeWidth(10);
-
+                mPaintArray[index].setStrokeWidth(20);
                 mPathArray[index].moveTo(event.getX(), event.getY());
             } else if (event.getActionMasked() == MotionEvent.ACTION_MOVE) {
                 mPathArray[index].lineTo(event.getX(), event.getY());
@@ -90,7 +93,31 @@ public class DrawingCanvas extends View {
                 paintContainer.add(mPaintArray[index]);
                 mPathArray[index] = new Path();
                 mPaintArray[index] = new Paint();
-                Log.d("LENGTH", String.valueOf(pathsContainer.size()));
+            }
+        } else {
+            if(CURRENT_MODE == DRAWING) {
+                if(event.getActionMasked() == MotionEvent.ACTION_DOWN
+                        || event.getActionMasked() == MotionEvent.ACTION_POINTER_DOWN) {
+                    Log.d("TOUCH", Arrays.toString(mPaintArray));
+                    mPathArray[index] = new Path();
+                    mPaintArray[index] = new Paint();
+                    mPaintArray[index].setColor(pathColour);
+                    mPaintArray[index].setStyle(Paint.Style.STROKE);
+                    mPaintArray[index].setStrokeJoin(Paint.Join.ROUND);
+                    mPaintArray[index].setStrokeCap(Paint.Cap.ROUND);
+                    mPaintArray[index].setStrokeWidth(10);
+                    mPathArray[index].moveTo(event.getX(), event.getY());
+                } else if (event.getActionMasked() == MotionEvent.ACTION_MOVE) {
+                    mPathArray[index].lineTo(event.getX(), event.getY());
+                    invalidate();
+                } else if (event.getActionMasked() == MotionEvent.ACTION_UP
+                        || event.getActionMasked() == MotionEvent.ACTION_POINTER_UP) {
+                    //Log.d("TOUCH", "FINGER UP");
+                    pathsContainer.add(mPathArray[index]);
+                    paintContainer.add(mPaintArray[index]);
+                    mPathArray[index] = new Path();
+                    mPaintArray[index] = new Paint();
+                }
             }
         }
         //TODO: other modes
@@ -169,14 +196,25 @@ public class DrawingCanvas extends View {
     }
 
     public void undo() {
-        paintContainer.removeLast();
-        pathsContainer.removeLast();
+        if(paintContainer.size() != 0 && pathsContainer.size() != 0) {
+            paintContainer.removeLast();
+            pathsContainer.removeLast();
+        }
         invalidate();
     }
 
     public void clearCanvas() {
-        paintContainer = new LinkedList<Paint>();
-        pathsContainer = new LinkedList<Path>();
+        paintContainer.clear();
+        pathsContainer.clear();
         invalidate();
+    }
+
+    public void setMode(int newMode) {
+        Log.d("NEW MODE", String.valueOf(newMode));
+        CURRENT_MODE = newMode;
+    }
+
+    public void toggleErase(boolean erase) {
+        isErasing = erase;
     }
 }

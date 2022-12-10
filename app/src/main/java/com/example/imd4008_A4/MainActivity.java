@@ -11,9 +11,12 @@ import androidx.fragment.app.FragmentTransaction;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.Spinner;
 
 import com.example.imd4008_A4.fragments.ColorPicker;
+import com.google.android.material.navigation.NavigationBarView;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -23,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
     FragmentContainerView fcv;
     FragmentManager fm;
     Button editBtn, eraseBtn, undoBtn, deleteBtn;
+    Spinner drawingMode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,8 +46,24 @@ public class MainActivity extends AppCompatActivity {
         eraseBtn = findViewById(R.id.eraseBtn);
         deleteBtn = findViewById(R.id.delBtn);
 
+        drawingMode = findViewById(R.id.selectMode);
+
+        drawingMode.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                setMode(drawingMode.getSelectedItem().toString());
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
         colorDisplay.setOnClickListener(view -> openColorChanger());
 
+        editBtn.setOnClickListener(view -> dc.toggleErase(false));
+        eraseBtn.setOnClickListener(view -> dc.toggleErase(true));
         undoBtn.setOnClickListener(view -> undo());
         deleteBtn.setOnClickListener(view -> erase());
         hideOverlay();
@@ -81,6 +101,25 @@ public class MainActivity extends AppCompatActivity {
         FragmentTransaction ft = fm.beginTransaction();
         ft.replace(R.id.fragmentContainerView, fragment, null);
         ft.commit();
+    }
+
+    void setMode(String mode) {
+        int newMode = 0;
+        switch (mode) {
+            case "Lines":
+                newMode = dc.DRAWING;
+                break;
+            case "Polyline":
+                newMode = dc.POLYLINE;
+                break;
+            case "Rectangle":
+                newMode = dc.RECT;
+                break;
+            case "Circle":
+                newMode = dc.CIRCLE;
+                break;
+        }
+        dc.setMode(newMode);
     }
 
     void erase() {

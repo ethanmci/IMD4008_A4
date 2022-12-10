@@ -188,9 +188,9 @@
         android:clickable="false"
         android:focusable="true"
         android:longClickable="false"
-        android:visibility="invisible"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:layout="@layout/fragment_color_picker" />
+        tools:layout="@layout/fragment_color_picker"
+        tools:visibility="invisible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
